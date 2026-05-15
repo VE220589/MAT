@@ -1,0 +1,30 @@
+syms y t
+disp('Método Heun');
+f = input('ingrese la edi dy/dt:');
+intervalo = input('ingrese el intervalo a evaluar: [a,b]');
+y0 = input('Ingrese el valor inicial: ');
+F = input('Ingrese la solución exacta:');
+h = input('Ingresemos el espaciado: ');
+a = intervalo(1);
+b = intervalo(2);
+T = [a:h:b];
+n = length(T)-1;
+Y(1) = y0;
+
+fprintf('Ti\t\t\t\t || k1 \t\t\t\t || k2 \t\t\t\t || Yi \t\t\t\t || F(ti) \t\t\t\t || Error\n');
+fprintf('%.15f\t || %.9f\t || %.15f\t  || %.15f\t || %e\n', T(1), 0,0, double(Y(1)),  double(Y(1)), 0);
+
+for i=1:n 
+    k1 = subs(f, {t,y}, {T(i), Y(i)});
+    k2 = subs(f, {t,y}, {T(i) + h*(2/3), Y(i) + h*(2/3)*k1});
+    Y(i+1) = Y(i) + (h/4)*(k1 + 3*k2);
+    
+    exacta = subs(F, t, T(i+1));
+    error = abs(exacta - Y(i+1));
+    
+    fprintf('%.15f\t || %.9f\t || %.9f\t || %.15f\t || %.15f\t || %e\n', T(i+1), double(k1), double(k2), double(Y(i+1)), double(exacta), double(error));
+end
+
+fprintf('El valor aproximado de y(%.15f)=%.15f \n ', b, double(Y(1+n)));
+fprintf('El valor exacto F(%.15f)=%.15f \n', b,double(exacta));
+fprintf('El error es: %e \n', double(error));
